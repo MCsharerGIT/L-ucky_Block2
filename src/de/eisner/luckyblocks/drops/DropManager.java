@@ -130,7 +130,6 @@ public class DropManager {
 		registerDrop(new HotbarSwap());
 		registerDrop(new DoorTrapDrop());
 		registerDrop(new ChairDrop());
-
 	}
 
 	public static final Random RANDOM = new Random();

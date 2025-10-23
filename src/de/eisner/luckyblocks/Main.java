@@ -16,8 +16,6 @@ public class Main extends JavaPlugin {
 	public static final String NAME = ColorUtil.createTextWithFade("Luckyblocks", 212, 108, 11, 0, 10, 0) + " §8\u00BB§7 ";
 
 	public static Main plugin;
-	
-	
 
 	@Override
 	public void onEnable() {

@@ -41,7 +41,6 @@ public class LuckBlockManager {
 
 	public static void registerLuckyBlockPlace(Location loc) {
 		LOCATIONS.add(loc);
-
 	}
 
 	public static void registerLuckyBlockBreak(Location loc, Player p) {
