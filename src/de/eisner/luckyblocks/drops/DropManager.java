@@ -5,11 +5,11 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
+import de.eisner.luckyblocks.drops.alldrops.*;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-
 import de.eisner.luckyblocks.drops.alldrops.BlockDrop;
 import de.eisner.luckyblocks.drops.alldrops.ChairDrop;
 import de.eisner.luckyblocks.drops.alldrops.ClimberLeggings;
@@ -45,6 +45,7 @@ import de.eisner.luckyblocks.drops.alldrops.TNTTrapDrop;
 import de.eisner.luckyblocks.drops.alldrops.ThrowablePotionDrop;
 import de.eisner.luckyblocks.drops.alldrops.TreeDrop;
 import de.eisner.luckyblocks.drops.alldrops.VaultDrop;
+
 
 public class DropManager {
 
@@ -130,6 +131,9 @@ public class DropManager {
 		registerDrop(new HotbarSwap());
 		registerDrop(new DoorTrapDrop());
 		registerDrop(new ChairDrop());
+		registerDrop(new NetherworldDrop());
+		registerDrop(new FishCannonDrop());
+		registerDrop(new OrbOfStrengthDrop());
 	}
 
 	public static final Random RANDOM = new Random();
