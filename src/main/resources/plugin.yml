@@ -1,0 +1,15 @@
+main: de.eisner.luckyblocks.Main
+author: Eisner
+api-version: 1.21
+name: LuckyBlocks
+version: 1.0
+commands:
+   lbgive:
+   lbdrop:
+   lbsettings:
+   lbodds:
+   lbrecipe:
+   
+   
+   
+   
