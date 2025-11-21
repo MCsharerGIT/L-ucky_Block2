@@ -134,6 +134,7 @@ public class DropManager {
 		registerDrop(new NetherworldDrop());
 		registerDrop(new FishCannonDrop());
 		registerDrop(new OrbOfStrengthDrop());
+		registerDrop(new AnvilDrop());
 	}
 
 	public static final Random RANDOM = new Random();
