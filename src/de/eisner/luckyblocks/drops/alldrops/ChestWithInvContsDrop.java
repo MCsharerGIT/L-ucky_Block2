@@ -37,59 +37,60 @@ public class ChestWithInvContsDrop extends Drop {
         final World world = loc.getWorld();
         if (world == null) return;
 
-        // 1) Pick an item from the player's inventory
+        // Pick an item the player actually has
         ItemStack chosen = pickRandomPlayerItem(p.getInventory());
         if (chosen == null) {
-            p.sendMessage("§7You don't have any items you prat!");
+            p.sendMessage("§7You don't have any items to copy.");
             return;
         }
 
-        // Normalize the amount to a sane, stackable range
-        int max = chosen.getMaxStackSize();
-        ItemStack fillStack = chosen.clone();
-        fillStack.setAmount(Math.min(Math.max(chosen.getAmount(), 1), max));
+        final ItemStack fillStack = chosen.clone();
+        fillStack.setAmount(Math.min(Math.max(fillStack.getAmount(), 1), fillStack.getMaxStackSize()));
+        Bukkit.getLogger().info("stack: " + fillStack);
 
-        // 2) Place a single chest at the target block position
-        Block target = loc.getBlock();
+        // Place chest at target
+        final Block target = loc.getBlock();
         target.setType(Material.CHEST, false);
 
-        // Face the chest toward the player, if possible
-        BlockData data = target.getBlockData();
-        if (data instanceof Directional dir) {
-            dir.setFacing(yawToFace(p.getLocation().getYaw()));
+        // Face chest *toward the player* & force SINGLE type
+        {
+            org.bukkit.block.data.type.Chest data = (org.bukkit.block.data.type.Chest) target.getBlockData();
+            data.setType(org.bukkit.block.data.type.Chest.Type.SINGLE);
+            data.setFacing(faceTowards(target.getLocation(), p.getLocation()));
             target.setBlockData(data, false);
         }
 
-        // 3) Fill the chest inventory with the chosen item
-        BlockState state = target.getState();
-        if (state instanceof Chest chest) {
+        // Fill inventory *next tick* and re-fetch the Chest state then
+        final org.bukkit.plugin.Plugin plugin = org.bukkit.Bukkit.getPluginManager().getPlugin("LuckyBlocks");
+        if (plugin == null) return;
+
+        org.bukkit.Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            BlockState stateNow = target.getState();
+            if (!(stateNow instanceof Chest chest)) return;
+            Bukkit.getLogger().info("Its a chest!");
+
             Inventory inv = chest.getBlockInventory();
+            Bukkit.getLogger().info("Chest inv!: " + inv);
             for (int i = 0; i < inv.getSize(); i++) {
                 inv.setItem(i, fillStack.clone());
             }
-            chest.update(true, false);
-        }
 
-        // 4) Little feedback
-        world.playSound(target.getLocation().add(0.5, 0.5, 0.5), Sound.BLOCK_CHEST_OPEN, 0.8f, 1.1f);
+            world.playSound(target.getLocation().add(0.5, 0.5, 0.5), Sound.BLOCK_CHEST_OPEN, 0.9f, 1.1f);
+        }, 1L); // <-- NOTE: wait 1 tick (not 0)
     }
 
-    // ---- helpers ----
-
-    /** Prefer main hand; else first non-empty slot; returns null if nothing usable. */
-    private ItemStack pickPlayerItem(PlayerInventory inv) {
-        ItemStack hand = inv.getItemInMainHand();
-        if (isUsable(hand)) return hand;
-
-        for (ItemStack it : inv.getContents()) {
-            if (isUsable(it)) return it;
+    /** Map chest->player vector to nearest horizontal BlockFace so the chest FRONT looks at the player. */
+    private BlockFace faceTowards(Location chest, Location player) {
+        double dx = player.getX() - (chest.getBlockX() + 0.5);
+        double dz = player.getZ() - (chest.getBlockZ() + 0.5);
+        if (Math.abs(dx) > Math.abs(dz)) {
+            return dx > 0 ? BlockFace.EAST : BlockFace.WEST;
+        } else {
+            return dz > 0 ? BlockFace.SOUTH : BlockFace.NORTH;
         }
-        // Optionally also check offhand/armor if you want:
-        ItemStack off = inv.getItemInOffHand();
-        if (isUsable(off)) return off;
-
-        return null;
     }
+
+
 
     private boolean isUsable(ItemStack it) {
         return it != null && it.getType() != Material.AIR && it.getAmount() > 0;
