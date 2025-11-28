@@ -35,7 +35,7 @@ public class PodestWithItemDrop extends Drop {
     public PodestWithItemDrop() {
         super(
                 "PodestWithItem",
-                Arrays.asList("Spruce + polished-stone pyramid with pillar, lanterns, amethyst rings, and 4 sidewalks."),
+                Arrays.asList("Small Podest with a random Minecraft Item"),
                 DropType.GOOD,
                 1L
         );
@@ -485,7 +485,7 @@ public class PodestWithItemDrop extends Drop {
             if (m.name().contains("LEGACY")) continue;
             pool.add(m);
         }
-        if (pool.isEmpty()) return Material.STICK;
+        if (pool.isEmpty()) return Material.BARRIER;
         return pool.get(ThreadLocalRandom.current().nextInt(pool.size()));
     }
 
